@@ -80,17 +80,17 @@ INSERT INTO customers (name, phone, passwordHash, shipmentAddress)
 VALUES ('Boris', '9012123243', NULL, NULL);
 
 INSERT INTO orders (customer_id, total, status)
-VALUES(1, 39990, 'Completed');
+VALUES(1, 39990, 'COMPLETED');
 
 INSERT INTO orders (customer_id, total, status)
-VALUES(1, 5550, 'Issued');
+VALUES(1, 5550, 'ISSUED');
 
 INSERT INTO orders (customer_id, total, status)
-VALUES(2,  12600, 'Issued');
+VALUES(2,  12600, 'ISSUED');
 
-INSERT INTO invoices (orders_id, status) VALUES (1, 'Paid');
-INSERT INTO invoices (orders_id, status) VALUES (2, 'Paid');
-INSERT INTO invoices (orders_id, status) VALUES (3, 'Issued');
+INSERT INTO invoices (orders_id, status) VALUES (1, 'PAID');
+INSERT INTO invoices (orders_id, status) VALUES (2, 'PAID');
+INSERT INTO invoices (orders_id, status) VALUES (3, 'ISSUED');
 
 INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
 VALUES (3, 1, 39900, 1, 20190101);
