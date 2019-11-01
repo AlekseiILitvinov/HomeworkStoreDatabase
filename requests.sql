@@ -13,9 +13,10 @@ CREATE TABLE products(
 CREATE TABLE customers(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL ,
-    phone TEXT NOT NULL , --used for login too
+    phone TEXT NOT NULL , --used for login too, initially can be null,
     passwordHash TEXT,
-    shipmentAddress TEXT
+    shipmentAddress TEXT,
+    UNIQUE (name, phone)
 );
 
 CREATE TABLE orders(
