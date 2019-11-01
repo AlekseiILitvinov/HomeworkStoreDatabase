@@ -5,7 +5,7 @@ CREATE TABLE products(
     description TEXT NOT NULL,
     currentPrice INTEGER NOT NULL CHECK ( currentPrice >= 0 ),
     stock INTEGER NOT NULL CHECK ( stock >=0 ),
-    status TEXT --NULL for removed, AVAILABLE/COMING SOON/CAN ORDER
+    status TEXT NOT NULL --REMOVED/AVAILABLE/COMING SOON/CAN ORDER
 );
 
 -- users that are not registered provide phone and name, but get no pass their actions are limited (in service)
@@ -69,7 +69,7 @@ VALUES (
            'Strong case',
            39990,
            0,
-           NULL
+           'REMOVED'
        );
 
 --OK. the password is not a hash here for now, but it shouldn't be stored in plain text in real life case
