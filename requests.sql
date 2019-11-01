@@ -20,21 +20,22 @@ CREATE TABLE customers(
 
 CREATE TABLE orders(
     id INTEGER PRIMARY KEY AUTOINCREMENT ,
-    customer_id INTEGER REFERENCES customers(id),
+    customer_id INTEGER REFERENCES customers(id), --initially this can be null in case it is an unregistered user, but
+    -- it is filled later, once they provide name and phone
     total INTEGER, --not to dig through sales every time. it should be updated after the order is finished
     status TEXT --Completed/Shipped/Paid/Issued/Cart/Cancelled
 );
 
 CREATE TABLE invoices(
     id INTEGER PRIMARY KEY AUTOINCREMENT ,
-    orders_id INTEGER REFERENCES orders(id),
+    orders_id INTEGER NOT NULL REFERENCES orders(id),
     status TEXT NOT NULL --Issued/Processing/Done/Rejected/ErrorCode
 );
 
 CREATE TABLE sales (
     id INTEGER PRIMARY KEY  AUTOINCREMENT,
-    product_id INTEGER REFERENCES products(id),
-    order_id INTEGER REFERENCES orders(id),
+    product_id INTEGER NOT NULL REFERENCES products(id),
+    order_id INTEGER NOT NULL REFERENCES orders(id),
     price INTEGER NOT NULL CHECK ( price >= 0 ),
     amountSold INTEGER NOT NULL CHECK ( amountSold > 0 ),
     dateSold INTEGER NOT NULL CHECK ( dateSold > 0) --UTC, or even formatted as yyyymmdd (20191029)
