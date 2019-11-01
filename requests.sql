@@ -20,7 +20,7 @@ CREATE TABLE customers(
 
 CREATE TABLE orders(
     id INTEGER PRIMARY KEY AUTOINCREMENT ,
-    customer_id INTEGER REFERENCES customers(id), --initially this can be null in case it is an unregistered user, but
+    customerId INTEGER REFERENCES customers(id), --initially this can be null in case it is an unregistered user, but
     -- it is filled later, once they provide name and phone
     total INTEGER, --not to dig through sales every time. it should be updated after the order is finished
     status TEXT --Completed/Shipped/Paid/Issued/Cart/Cancelled
@@ -28,14 +28,14 @@ CREATE TABLE orders(
 
 CREATE TABLE invoices(
     id INTEGER PRIMARY KEY AUTOINCREMENT ,
-    orders_id INTEGER NOT NULL REFERENCES orders(id),
+    ordersId INTEGER NOT NULL REFERENCES orders(id),
     status TEXT NOT NULL --Issued/Processing/Done/Rejected/ErrorCode
 );
 
 CREATE TABLE sales (
     id INTEGER PRIMARY KEY  AUTOINCREMENT,
-    product_id INTEGER NOT NULL REFERENCES products(id),
-    order_id INTEGER NOT NULL REFERENCES orders(id),
+    productId INTEGER NOT NULL REFERENCES products(id),
+    orderId INTEGER NOT NULL REFERENCES orders(id),
     price INTEGER NOT NULL CHECK ( price >= 0 ),
     amountSold INTEGER NOT NULL CHECK ( amountSold > 0 ),
     dateSold INTEGER NOT NULL CHECK ( dateSold > 0) --UTC, or even formatted as yyyymmdd (20191029)
@@ -79,27 +79,27 @@ VALUES ('Andrew', '9012345678', 'asdfrewwq', 'default city ...');
 INSERT INTO customers (name, phone, passwordHash, shipmentAddress)
 VALUES ('Boris', '9012123243', NULL, NULL);
 
-INSERT INTO orders (customer_id, total, status)
+INSERT INTO orders (customerId, total, status)
 VALUES(1, 39990, 'COMPLETED');
 
-INSERT INTO orders (customer_id, total, status)
+INSERT INTO orders (customerId, total, status)
 VALUES(1, 5550, 'ISSUED');
 
-INSERT INTO orders (customer_id, total, status)
+INSERT INTO orders (customerId, total, status)
 VALUES(2,  12600, 'ISSUED');
 
-INSERT INTO invoices (orders_id, status) VALUES (1, 'PAID');
-INSERT INTO invoices (orders_id, status) VALUES (2, 'PAID');
-INSERT INTO invoices (orders_id, status) VALUES (3, 'ISSUED');
+INSERT INTO invoices (ordersId, status)VALUES (1, 'PAID');
+INSERT INTO invoices (ordersId, status)VALUES (2, 'PAID');
+INSERT INTO invoices (ordersId, status)VALUES (3, 'ISSUED');
 
-INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
+INSERT INTO sales (productId, orderId, price, amountSold, dateSold)
 VALUES (3, 1, 39900, 1, 20190101);
 
-INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
+INSERT INTO sales (productId, orderId, price, amountSold, dateSold)
 VALUES (1, 2, 5500, 1, 20190211);
 
-INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
+INSERT INTO sales (productId, orderId, price, amountSold, dateSold)
 VALUES (1, 3, 5550, 1, 20190123);
 
-INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
+INSERT INTO sales (productId, orderId, price, amountSold, dateSold)
 VALUES (2, 3, 7050, 1, 20190123);
