@@ -5,7 +5,7 @@ CREATE TABLE products(
     description TEXT NOT NULL,
     currentPrice INTEGER NOT NULL CHECK ( currentPrice >= 0 ),
     stock INTEGER NOT NULL CHECK ( stock >=0 ),
-    status TEXT NOT NULL --REMOVED/AVAILABLE/COMING SOON/CAN ORDER
+    status TEXT --NULL for removed, AVAILABLE/COMING SOON/CAN ORDER
 );
 
 -- users that are not registered provide phone and name, but get no pass their actions are limited (in service)
@@ -13,30 +13,28 @@ CREATE TABLE products(
 CREATE TABLE customers(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL ,
-    phone TEXT NOT NULL , --used for login too, initially can be null,
+    phone TEXT NOT NULL , --used for login too
     passwordHash TEXT,
-    shipmentAddress TEXT,
-    UNIQUE (name, phone)
+    shipmentAddress TEXT
 );
 
 CREATE TABLE orders(
     id INTEGER PRIMARY KEY AUTOINCREMENT ,
-    customerId INTEGER REFERENCES customers(id), --initially this can be null in case it is an unregistered user, but
-    -- it is filled later, once they provide name and phone
+    customer_id INTEGER REFERENCES customers(id),
     total INTEGER, --not to dig through sales every time. it should be updated after the order is finished
     status TEXT --Completed/Shipped/Paid/Issued/Cart/Cancelled
 );
 
 CREATE TABLE invoices(
     id INTEGER PRIMARY KEY AUTOINCREMENT ,
-    ordersId INTEGER NOT NULL REFERENCES orders(id),
+    order_id INTEGER REFERENCES orders(id),
     status TEXT NOT NULL --Issued/Processing/Done/Rejected/ErrorCode
 );
 
 CREATE TABLE sales (
     id INTEGER PRIMARY KEY  AUTOINCREMENT,
-    productId INTEGER NOT NULL REFERENCES products(id),
-    orderId INTEGER NOT NULL REFERENCES orders(id),
+    product_id INTEGER REFERENCES products(id),
+    order_id INTEGER REFERENCES orders(id),
     price INTEGER NOT NULL CHECK ( price >= 0 ),
     amountSold INTEGER NOT NULL CHECK ( amountSold > 0 ),
     dateSold INTEGER NOT NULL CHECK ( dateSold > 0) --UTC, or even formatted as yyyymmdd (20191029)
@@ -69,7 +67,7 @@ VALUES (
            'Strong case',
            39990,
            0,
-           'REMOVED'
+           NULL
        );
 
 --OK. the password is not a hash here for now, but it shouldn't be stored in plain text in real life case
@@ -80,27 +78,27 @@ VALUES ('Andrew', '9012345678', 'asdfrewwq', 'default city ...');
 INSERT INTO customers (name, phone, passwordHash, shipmentAddress)
 VALUES ('Boris', '9012123243', NULL, NULL);
 
-INSERT INTO orders (customerId, total, status)
-VALUES(1, 39990, 'COMPLETED');
+INSERT INTO orders (customer_id, total, status)
+VALUES(1, 39990, 'Completed');
 
-INSERT INTO orders (customerId, total, status)
-VALUES(1, 5550, 'ISSUED');
+INSERT INTO orders (customer_id, total, status)
+VALUES(1, 5550, 'Issued');
 
-INSERT INTO orders (customerId, total, status)
-VALUES(2,  12600, 'ISSUED');
+INSERT INTO orders (customer_id, total, status)
+VALUES(2,  12600, 'Issued');
 
-INSERT INTO invoices (ordersId, status)VALUES (1, 'PAID');
-INSERT INTO invoices (ordersId, status)VALUES (2, 'PAID');
-INSERT INTO invoices (ordersId, status)VALUES (3, 'ISSUED');
+INSERT INTO invoices (order_id, status) VALUES (1, 'Paid');
+INSERT INTO invoices (order_id, status) VALUES (2, 'Paid');
+INSERT INTO invoices (order_id, status) VALUES (3, 'Issued');
 
-INSERT INTO sales (productId, orderId, price, amountSold, dateSold)
+INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
 VALUES (3, 1, 39900, 1, 20190101);
 
-INSERT INTO sales (productId, orderId, price, amountSold, dateSold)
+INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
 VALUES (1, 2, 5500, 1, 20190211);
 
-INSERT INTO sales (productId, orderId, price, amountSold, dateSold)
+INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
 VALUES (1, 3, 5550, 1, 20190123);
 
-INSERT INTO sales (productId, orderId, price, amountSold, dateSold)
+INSERT INTO sales (product_id, order_id, price, amountSold, dateSold)
 VALUES (2, 3, 7050, 1, 20190123);
